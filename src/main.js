@@ -98,6 +98,8 @@ function start() {
   window.addEventListener('mousedown', initAudio);
   window.addEventListener('keydown', initAudio);
   window.addEventListener('resize', resize);
+  window.addEventListener('blur', () => app.scene.onBlur?.());
+  document.addEventListener('visibilitychange', () => document.hidden && app.scene.onBlur?.());
   resize();
   // Dev shortcut: index.html?level=3 jumps straight into level 3
   const lv = Number(new URLSearchParams(location.search).get('level'));

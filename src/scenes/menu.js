@@ -7,6 +7,8 @@ import { drawSprite } from '../sprites.js';
 import { Player } from '../entities/player.js';
 
 const DEMO_TYPES = ['grunt', 'runner', 'tank', 'shooter'];
+// Phones/tablets have no keyboard or mouse, so warn visitors there
+const TOUCH_ONLY = window.matchMedia?.('(pointer: coarse)').matches && !window.matchMedia('(pointer: fine)').matches;
 
 export class MenuScene {
   constructor(app) {
@@ -67,5 +69,12 @@ export class MenuScene {
     drawText(ctx, 'ARROWS MOVE  -  MOUSE AIM  -  CLICK SHOOT', cx, 140, { align: 'center' });
     drawText(ctx, 'SPACE DASH  -  ESC PAUSE  -  M MUTE', cx, 153, { align: 'center', color: '#94b0c2' });
     drawText(ctx, `HI-SCORE ${String(this.app.highScore).padStart(6, '0')}`, cx, 168, { align: 'center', color: '#ffcd75' });
+
+    if (TOUCH_ONLY) {
+      ctx.fillStyle = 'rgba(177,62,83,0.92)';
+      ctx.fillRect(0, 108, W, 28);
+      drawText(ctx, 'THIS GAME NEEDS A KEYBOARD AND MOUSE', cx, 111, { align: 'center' });
+      drawText(ctx, 'OPEN THE LINK ON A COMPUTER TO PLAY', cx, 122, { align: 'center', color: '#ffcd75' });
+    }
   }
 }

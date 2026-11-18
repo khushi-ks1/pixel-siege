@@ -335,8 +335,29 @@ export class GameScene {
     this.drawOverlays(ctx);
   }
 
+  // Auto-pause when the window loses focus (tab switch, alt-tab)
+  onBlur() {
+    if (this.state === 'play' || this.state === 'boss') this.paused = true;
+  }
+
   drawOverlays(ctx) {
     const cx = W / 2;
+
+    // low-health warning: pulsing red border on the last heart
+    if (this.state !== 'dead' && this.player.hp === 1) {
+      ctx.fillStyle = `rgba(228,59,68,${0.25 + 0.15 * Math.sin(this.t * 8)})`;
+      ctx.fillRect(0, 14, W, 3);
+      ctx.fillRect(0, H - 3, W, 3);
+      ctx.fillRect(0, 14, 3, H - 14);
+      ctx.fillRect(W - 3, 14, 3, H - 14);
+    }
+
+    // first-level tips
+    if (this.levelIndex === 0 && this.state === 'play' && this.introT <= 0 && this.introT > -10) {
+      const tip = this.introT > -5 ? 'TIP: PRESS SPACE TO DASH THROUGH DANGER' : 'TIP: GRAB DROPS FOR POWER-UPS AND HEARTS';
+      drawText(ctx, tip, cx, H - 16, { align: 'center', color: '#94b0c2', alpha: 0.9 });
+    }
+
     if (this.state === 'play' && this.introT > 0) {
       band(ctx, 66, 46);
       drawText(ctx, `LEVEL ${this.levelIndex + 1}`, cx, 72, { size: 14, align: 'center', color: '#ffcd75' });
