@@ -13,7 +13,7 @@ export function drawHUD(ctx, g) {
     drawSprite(ctx, i < p.hp ? 'heart' : 'heartEmpty', 0, 7 + i * 9, 7);
   }
 
-  drawText(ctx, `LV${g.levelIndex + 1}`, 56, 3, { color: '#ffcd75' });
+  drawText(ctx, `LV${g.levelIndex + 1}`, 56, 2, { color: '#ffcd75' });
 
   // progress bar: kills remaining, or boss health during the boss fight
   const bx = 90, by = 3, bw = 92, bh = 7;
@@ -37,7 +37,7 @@ export function drawHUD(ctx, g) {
   ctx.fillRect(bx, by, Math.round(bw * ratio), bh);
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
   ctx.fillRect(bx, by, Math.round(bw * ratio), 1);
-  drawText(ctx, label, bx + bw + 5, 3, { color: g.state === 'boss' ? '#e43b44' : '#f4f4f4' });
+  drawText(ctx, label, bx + bw + 5, 2, { color: g.state === 'boss' ? '#e43b44' : '#f4f4f4' });
 
-  drawText(ctx, String(g.score).padStart(6, '0'), W - 4, 3, { align: 'right' });
+  drawText(ctx, String(g.score).padStart(6, '0'), W - 4, 2, { align: 'right' });
 }

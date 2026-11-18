@@ -29,7 +29,7 @@ export class GameOverScene {
     ctx.fillStyle = '#12060c';
     ctx.fillRect(0, 0, W, H);
     const cx = W / 2;
-    drawText(ctx, 'GAME OVER', cx, 34, { size: 16, align: 'center', color: '#e43b44' });
+    drawText(ctx, 'GAME OVER', cx, 34, { size: 14, align: 'center', color: '#e43b44' });
     drawText(ctx, `REACHED LEVEL ${this.level + 1}`, cx, 66, { align: 'center', color: '#94b0c2' });
     drawText(ctx, `SCORE    ${String(this.score).padStart(6, '0')}`, cx, 82, { align: 'center' });
     drawText(ctx, `HI-SCORE ${String(this.app.highScore).padStart(6, '0')}`, cx, 96, { align: 'center', color: '#ffcd75' });

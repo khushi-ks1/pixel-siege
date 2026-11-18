@@ -30,7 +30,7 @@ export class LevelCompleteScene {
     ctx.fillRect(0, 0, W, H);
     const cx = W / 2;
 
-    drawText(ctx, `LEVEL ${this.level + 1} CLEAR!`, cx, 24, { size: 16, align: 'center', color: '#38b764' });
+    drawText(ctx, `LEVEL ${this.level + 1} CLEAR!`, cx, 24, { size: 14, align: 'center', color: '#38b764' });
     drawText(ctx, `SCORE ${String(this.score).padStart(6, '0')}`, cx, 52, { align: 'center' });
     drawText(ctx, this.healed ? '+1 HEART' : 'HEALTH FULL', cx, 66, { align: 'center', color: '#e43b44' });
 

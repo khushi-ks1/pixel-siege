@@ -30,6 +30,7 @@ export class GameScene {
     this.floor = makeFloor(this.level.floor);
     this.decals = makeCanvas();
     this.shake = 0;
+    this.freeze = 0;
     this.introT = 2.5;
     this.bannerT = 0;
     this.t = 0;
@@ -59,6 +60,11 @@ export class GameScene {
     }
     if (this.paused) {
       if (input.wasPressed('KeyQ')) this.app.goto('menu');
+      return;
+    }
+    // hitstop: a tiny freeze-frame that makes heavy hits feel weighty
+    if (this.freeze > 0) {
+      this.freeze -= dt;
       return;
     }
 
@@ -161,7 +167,8 @@ export class GameScene {
       for (let i = 0; i < 5; i++) {
         this.particles.burst(e.x + rand(-12, 12), e.y + rand(-12, 12), { count: 25, colors: e.def.parts, speed: 120, life: 0.9, size: 2 });
       }
-      this.shake = 8;
+      this.shake = 7;
+      this.freeze = 0.25;
       sfx.explode();
       this.clearLevel();
       return;
@@ -169,7 +176,11 @@ export class GameScene {
 
     this.particles.burst(e.x, e.y, { count: 12, colors: e.def.parts, speed: 70, life: 0.45 });
     if (this.state === 'play') this.kills++;
-    this.shake = Math.max(this.shake, 1.5);
+    // save shake for heavy kills only, so it keeps its punch
+    if (e.maxHp >= 10) {
+      this.shake = Math.max(this.shake, 2.5);
+      this.freeze = 0.06;
+    }
     sfx.enemyDie();
   }
 
@@ -190,7 +201,8 @@ export class GameScene {
     const p = this.player;
     if (!p.hurt()) return false;
     sfx.hurt();
-    this.shake = 4;
+    this.shake = 3.5;
+    this.freeze = 0.08;
     this.particles.burst(p.x, p.y, { count: 10, colors: ['#e43b44', '#b13e53', '#f4c09a'], speed: 60, life: 0.4 });
     if (p.hp <= 0) this.die();
     return true;
@@ -271,26 +283,26 @@ export class GameScene {
     const cx = W / 2;
     if (this.state === 'play' && this.introT > 0) {
       band(ctx, 66, 46);
-      drawText(ctx, `LEVEL ${this.levelIndex + 1}`, cx, 72, { size: 16, align: 'center', color: '#ffcd75' });
+      drawText(ctx, `LEVEL ${this.levelIndex + 1}`, cx, 72, { size: 14, align: 'center', color: '#ffcd75' });
       drawText(ctx, this.level.name, cx, 92, { align: 'center' });
-      if (blink(this.t, 3)) drawText(ctx, 'GET READY!', cx, 102, { align: 'center', color: '#73eff7', size: 8 });
+      if (blink(this.t, 3)) drawText(ctx, 'GET READY!', cx, 102, { align: 'center', color: '#73eff7' });
     }
     if (this.state === 'boss' && this.bannerT > 0 && blink(this.t, 4)) {
       band(ctx, 76, 26);
-      drawText(ctx, '!! WARNING !!', cx, 81, { size: 16, align: 'center', color: '#e43b44' });
+      drawText(ctx, '!! WARNING !!', cx, 81, { size: 14, align: 'center', color: '#e43b44' });
     }
     if (this.state === 'cleared') {
       band(ctx, 72, 30);
-      drawText(ctx, 'LEVEL CLEAR!', cx, 79, { size: 16, align: 'center', color: '#38b764' });
+      drawText(ctx, 'LEVEL CLEAR!', cx, 79, { size: 14, align: 'center', color: '#38b764' });
     }
     if (this.state === 'dead') {
       band(ctx, 72, 30);
-      drawText(ctx, 'YOU DIED', cx, 79, { size: 16, align: 'center', color: '#e43b44' });
+      drawText(ctx, 'YOU DIED', cx, 79, { size: 14, align: 'center', color: '#e43b44' });
     }
     if (this.paused) {
       ctx.fillStyle = 'rgba(10,10,20,0.7)';
       ctx.fillRect(0, 0, W, H);
-      drawText(ctx, 'PAUSED', cx, 66, { size: 16, align: 'center', color: '#ffcd75' });
+      drawText(ctx, 'PAUSED', cx, 66, { size: 14, align: 'center', color: '#ffcd75' });
       drawText(ctx, 'ESC: RESUME', cx, 96, { align: 'center' });
       drawText(ctx, 'Q: QUIT TO MENU', cx, 110, { align: 'center' });
     }

@@ -52,8 +52,8 @@ export class MenuScene {
     ctx.fillRect(0, 0, W, H);
 
     const cx = W / 2;
-    drawText(ctx, 'PIXEL SIEGE', cx + 2, 18, { size: 24, align: 'center', color: '#b13e53', shadow: '#1a1c2c' });
-    drawText(ctx, 'PIXEL SIEGE', cx, 16, { size: 24, align: 'center', color: '#ffcd75', shadow: null });
+    drawText(ctx, 'PIXEL SIEGE', cx + 2, 18, { size: 20, align: 'center', color: '#b13e53', shadow: '#1a1c2c' });
+    drawText(ctx, 'PIXEL SIEGE', cx, 16, { size: 20, align: 'center', color: '#ffcd75', shadow: null });
     drawText(ctx, 'SURVIVE 5 LEVELS OF THE HORDE', cx, 46, { align: 'center', color: '#94b0c2' });
 
     // big animated hero in the middle, aiming at the mouse

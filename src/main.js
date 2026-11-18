@@ -19,9 +19,8 @@ const SCENES = {
 };
 
 const canvas = document.getElementById('game');
-canvas.width = W;
-canvas.height = H;
 const ctx = canvas.getContext('2d');
+let k = 3; // real (device) pixels per game pixel
 
 function loadHigh() {
   try { return Number(localStorage.getItem(HIGH_KEY)) || 0; } catch { return 0; }
@@ -42,12 +41,17 @@ const app = {
   },
 };
 
-// Scale the canvas up by a whole number so pixels stay crisp
+// Render at the screen's real resolution (so text is sharp) while the game itself
+// still thinks in 320x180 "game pixels". k is a whole number so pixel art stays crisp.
 function resize() {
-  const fit = Math.min(window.innerWidth / W, window.innerHeight / H);
-  const s = fit >= 1 ? Math.floor(fit) : fit;
-  canvas.style.width = `${W * s}px`;
-  canvas.style.height = `${H * s}px`;
+  const dpr = window.devicePixelRatio || 1;
+  const fit = Math.min((window.innerWidth * 0.9) / W, (window.innerHeight * 0.9) / H);
+  const cssScale = Math.min(fit, 3); // cap the size on big monitors
+  k = Math.max(1, Math.floor(cssScale * dpr));
+  canvas.width = W * k;
+  canvas.height = H * k;
+  canvas.style.width = `${(W * k) / dpr}px`;
+  canvas.style.height = `${(H * k) / dpr}px`;
 }
 
 function drawCrosshair() {
@@ -79,7 +83,7 @@ function frame(now) {
     input.endStep();
     acc -= STEP;
   }
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.setTransform(k, 0, 0, k, 0, 0);
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, W, H);
   app.scene.draw(ctx);
@@ -103,5 +107,7 @@ function start() {
 }
 
 // Wait (briefly) for the pixel font so text doesn't flash in a fallback font
-const fontReady = document.fonts ? document.fonts.load('8px "Press Start 2P"') : Promise.resolve();
+const fontReady = document.fonts
+  ? Promise.all([document.fonts.load('8px "Press Start 2P"'), document.fonts.load('10px "VT323"')])
+  : Promise.resolve();
 Promise.race([fontReady, new Promise((r) => setTimeout(r, 1500))]).catch(() => {}).finally(start);

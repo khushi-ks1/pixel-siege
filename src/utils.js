@@ -35,19 +35,23 @@ export function edgePoint(side = randInt(0, 3), m = 14) {
   }
 }
 
+// Big text (titles) uses the chunky "Press Start 2P"; everything smaller uses the
+// narrower, more readable "VT323". Sizes are in game pixels.
 export function drawText(ctx, text, x, y, {
-  size = 8, color = '#f4f4f4', align = 'left', shadow = '#1a1c2c', alpha = 1,
+  size = 11, color = '#f4f4f4', align = 'left', shadow = '#1a1c2c', alpha = 1,
 } = {}) {
+  const title = size >= 14;
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.font = `${size}px "Press Start 2P", monospace`;
+  ctx.font = title ? `${size}px "Press Start 2P", monospace` : `${size}px "VT323", monospace`;
   ctx.textAlign = align;
   ctx.textBaseline = 'top';
   x = Math.round(x);
   y = Math.round(y);
   if (shadow) {
+    const off = title ? 1 : 0.6;
     ctx.fillStyle = shadow;
-    ctx.fillText(text, x + 1, y + 1);
+    ctx.fillText(text, x + off, y + off);
   }
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);

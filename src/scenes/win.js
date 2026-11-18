@@ -35,7 +35,7 @@ export class WinScene {
     ctx.fillRect(0, 0, W, H);
     this.particles.draw(ctx);
     const cx = W / 2;
-    drawText(ctx, 'YOU WIN!', cx, 36, { size: 24, align: 'center', color: '#ffcd75' });
+    drawText(ctx, 'YOU WIN!', cx, 36, { size: 20, align: 'center', color: '#ffcd75' });
     drawText(ctx, 'THE SIEGE IS BROKEN', cx, 74, { align: 'center', color: '#94b0c2' });
     drawText(ctx, `SCORE    ${String(this.score).padStart(6, '0')}`, cx, 96, { align: 'center' });
     drawText(ctx, `HI-SCORE ${String(this.app.highScore).padStart(6, '0')}`, cx, 110, { align: 'center', color: '#ffcd75' });
