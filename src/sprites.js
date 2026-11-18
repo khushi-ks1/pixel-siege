@@ -208,7 +208,33 @@ const HEART = [
   '...k...',
 ];
 
+// Power-up badges: lightning bolt (rapid fire) and a three-prong fan (triple shot)
+const POWER_RAPID = [
+  '.kkkkkkk.',
+  'kyyyykkyk',
+  'kyyykkyyk',
+  'kyykkyyyk',
+  'kykkkkkyk',
+  'kyyykkyyk',
+  'kyykkyyyk',
+  'kykkyyyyk',
+  '.kkkkkkk.',
+];
+const POWER_SPREAD = [
+  '.kkkkkkk.',
+  'kcCcCcCck',
+  'kcCcCcCck',
+  'kccCCCcck',
+  'kcccCccck',
+  'kcccCccck',
+  'kccCCCcck',
+  'kccccccck',
+  '.kkkkkkk.',
+];
+
 export function initSprites() {
+  add('powerRapid', [POWER_RAPID]);
+  add('powerSpread', [POWER_SPREAD]);
   add('playerFront', playerFrames(P_HEAD_FRONT));
   add('playerBack', playerFrames(P_HEAD_BACK));
   add('gun', [GUN]);

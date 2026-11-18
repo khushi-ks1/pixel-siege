@@ -77,6 +77,11 @@ export const sfx = {
     noise({ dur: 0.25, vol: 0.3, freq: 900 });
   },
   enemyShoot: () => tone({ freq: 420, to: 260, dur: 0.1, type: 'triangle', vol: 0.25 }),
+  pickup() {
+    tone({ freq: 988, dur: 0.07, vol: 0.25 });
+    tone({ freq: 1319, dur: 0.12, vol: 0.25, delay: 0.07 });
+    noise({ dur: 0.15, vol: 0.12, freq: 5000 });
+  },
   dash() {
     noise({ dur: 0.18, vol: 0.25, freq: 4000 });
     tone({ freq: 300, to: 700, dur: 0.12, type: 'triangle', vol: 0.15 });

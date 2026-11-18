@@ -1,4 +1,4 @@
-import { W, H, rand, randInt, circleHit, drawText, band, blink } from '../utils.js';
+import { W, H, rand, randInt, circleHit, pickWeighted, drawText, band, blink } from '../utils.js';
 import { input } from '../input.js';
 import { sfx } from '../audio.js';
 import { LEVELS } from '../levels.js';
@@ -6,6 +6,7 @@ import { Player } from '../entities/player.js';
 import { Bullet } from '../entities/bullet.js';
 import { Enemy } from '../entities/enemy.js';
 import { Particles } from '../entities/particles.js';
+import { Pickup } from '../entities/pickup.js';
 import { Spawner } from '../spawner.js';
 import { makeFloor, makeCanvas } from '../floor.js';
 import { drawHUD } from '../hud.js';
@@ -25,6 +26,7 @@ export class GameScene {
     this.enemyBullets = [];
     this.particles = new Particles();
     this.popups = [];
+    this.pickups = [];
     this.kills = 0;
     this.spawner = new Spawner(this.level);
     this.floor = makeFloor(this.level.floor);
@@ -42,10 +44,10 @@ export class GameScene {
   }
 
   // ---------- actions used by entities ----------
-  playerShoot(x, y, angle) {
+  playerShoot(x, y, angle, silent = false) {
     this.bullets.push(new Bullet(x, y, angle, 240));
     this.particles.burst(x, y, { count: 2, colors: ['#ffcd75', '#ef7d57'], speed: 30, life: 0.1, angle, spread: 1 });
-    sfx.shoot();
+    if (!silent) sfx.shoot();
   }
 
   onDash(p) {
@@ -117,6 +119,13 @@ export class GameScene {
       }
     }
 
+    // pickups
+    for (const pk of this.pickups) {
+      pk.update(dt);
+      if (!pk.dead && alive && circleHit(pk, this.player)) this.collect(pk);
+    }
+    this.pickups = this.pickups.filter((pk) => !pk.dead);
+
     this.enemies = this.enemies.filter((e) => !e.dead);
     this.bullets = this.bullets.filter((b) => !b.dead);
     this.enemyBullets = this.enemyBullets.filter((b) => !b.dead);
@@ -181,12 +190,33 @@ export class GameScene {
 
     this.particles.burst(e.x, e.y, { count: 12, colors: e.def.parts, speed: 70, life: 0.45 });
     if (this.state === 'play') this.kills++;
+    this.maybeDrop(e);
     // save shake for heavy kills only, so it keeps its punch
     if (e.maxHp >= 10) {
       this.shake = Math.max(this.shake, 2.5);
       this.freeze = 0.06;
     }
     sfx.enemyDie();
+  }
+
+  // Tough enemies drop items more often; hearts only drop when you're hurt
+  maybeDrop(e) {
+    const chance = e.maxHp >= 10 ? 0.35 : 0.07;
+    if (Math.random() > chance) return;
+    const mix = { rapid: 1, spread: 1 };
+    if (this.player.hp < this.player.maxHp) mix.heart = 0.9;
+    const x = Math.max(8, Math.min(W - 8, e.x)), y = Math.max(22, Math.min(H - 8, e.y));
+    this.pickups.push(new Pickup(pickWeighted(mix), x, y));
+  }
+
+  collect(pk) {
+    pk.dead = true;
+    const p = this.player;
+    if (pk.type === 'heart') p.hp = Math.min(p.maxHp, p.hp + 1);
+    else p.powers[pk.type] = pk.def.duration;
+    this.popups.push({ x: p.x, y: p.y - 14, text: pk.def.label, life: 1.1, color: pk.def.color });
+    this.particles.burst(pk.x, pk.y, { count: 14, colors: [pk.def.color, '#f4f4f4'], speed: 50, life: 0.4 });
+    sfx.pickup();
   }
 
   // Persistent splat on the floor
@@ -265,6 +295,7 @@ export class GameScene {
     }
     ctx.drawImage(this.floor, 0, 0);
     ctx.drawImage(this.decals, 0, 0);
+    for (const pk of this.pickups) pk.draw(ctx);
 
     // depth-sort characters by y so lower ones draw in front
     const ents = this.enemies.slice();

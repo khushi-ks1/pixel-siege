@@ -26,6 +26,7 @@ export class Player {
     this.dashCool = 0;
     this.dashDir = { x: 1, y: 0 };
     this.trail = [];   // after-images while dashing
+    this.powers = { rapid: 0, spread: 0 }; // seconds left on each power-up
   }
 
   get dashing() {
@@ -70,12 +71,19 @@ export class Player {
     this.flashT -= dt;
     this.recoil = Math.max(0, this.recoil - dt * 30);
 
+    for (const k in this.powers) this.powers[k] = Math.max(0, this.powers[k] - dt);
+
     if (input.mouseDown && this.cool <= 0) {
-      this.cool = this.fireDelay;
+      this.cool = this.powers.rapid > 0 ? this.fireDelay / 2 : this.fireDelay;
       this.recoil = 2;
       this.flashT = 0.05;
       const tip = this.gunTip();
-      game.playerShoot(tip.x, tip.y, this.aim + rand(-0.04, 0.04));
+      const aim = this.aim + rand(-0.04, 0.04);
+      game.playerShoot(tip.x, tip.y, aim);
+      if (this.powers.spread > 0) {
+        game.playerShoot(tip.x, tip.y, aim - 0.2, true);
+        game.playerShoot(tip.x, tip.y, aim + 0.2, true);
+      }
     }
   }
 
