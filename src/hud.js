@@ -58,5 +58,14 @@ export function drawHUD(ctx, g) {
 
   drawText(ctx, String(g.score).padStart(6, '0'), W - 4, 2, { align: 'right' });
 
+  // combo multiplier under the score, with a bar showing time left to keep it
+  if (g.multiplier > 1) {
+    drawText(ctx, `x${g.multiplier} COMBO`, W - 4, 15, { align: 'right', color: '#73eff7' });
+    ctx.fillStyle = 'rgba(26,28,44,0.85)';
+    ctx.fillRect(W - 40, 26, 36, 3);
+    ctx.fillStyle = '#73eff7';
+    ctx.fillRect(W - 39, 27, Math.max(0, Math.round((34 * g.comboT) / 2)), 1);
+  }
+
   drawPowers(ctx, p);
 }

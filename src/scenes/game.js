@@ -28,6 +28,8 @@ export class GameScene {
     this.popups = [];
     this.pickups = [];
     this.kills = 0;
+    this.combo = 0;   // kills in a row without a 2s gap or getting hit
+    this.comboT = 0;
     this.spawner = new Spawner(this.level);
     this.floor = makeFloor(this.level.floor);
     this.decals = makeCanvas();
@@ -76,6 +78,8 @@ export class GameScene {
     }
 
     this.t += dt;
+    this.comboT -= dt;
+    if (this.comboT <= 0) this.combo = 0;
     this.introT -= dt;
     this.bannerT -= dt;
     this.shake = Math.max(0, this.shake - dt * 15);
@@ -171,10 +175,25 @@ export class GameScene {
     if (e.hp <= 0) this.killEnemy(e);
   }
 
+  // Score multiplier: x1, then +1 for every 5 kills in the combo, up to x5
+  get multiplier() {
+    return Math.min(5, 1 + Math.floor(this.combo / 5));
+  }
+
   killEnemy(e) {
     e.dead = true;
-    this.score += e.def.score;
-    this.popups.push({ x: e.x, y: e.y - 10, text: `+${e.def.score}`, life: 0.8, color: '#ffcd75' });
+    if (!e.def.boss) {
+      const before = this.multiplier;
+      this.combo++;
+      this.comboT = 2;
+      if (this.multiplier > before) {
+        this.popups.push({ x: W / 2, y: 30, text: `x${this.multiplier} COMBO!`, life: 1.2, color: '#73eff7' });
+        sfx.combo();
+      }
+    }
+    const pts = e.def.score * this.multiplier;
+    this.score += pts;
+    this.popups.push({ x: e.x, y: e.y - 10, text: `+${pts}`, life: 0.8, color: this.multiplier > 1 ? '#73eff7' : '#ffcd75' });
     this.splat(e);
 
     if (e.def.boss) {
@@ -235,6 +254,7 @@ export class GameScene {
   hurtPlayer() {
     const p = this.player;
     if (!p.hurt()) return false;
+    this.combo = 0;
     sfx.hurt();
     this.shake = 3.5;
     this.freeze = 0.08;
