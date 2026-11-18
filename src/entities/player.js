@@ -77,7 +77,8 @@ export class Player {
       this.cool = this.powers.rapid > 0 ? this.fireDelay / 2 : this.fireDelay;
       this.recoil = 2;
       this.flashT = 0.05;
-      const tip = this.gunTip();
+      // spawn bullets close to the body so point-blank shots still hit
+      const tip = this.gunTip(4);
       const aim = this.aim + rand(-0.04, 0.04);
       game.playerShoot(tip.x, tip.y, aim);
       if (this.powers.spread > 0) {
@@ -87,8 +88,8 @@ export class Player {
     }
   }
 
-  gunTip() {
-    return { x: this.x + Math.cos(this.aim) * 10, y: this.y + 2 + Math.sin(this.aim) * 10 };
+  gunTip(dist = 10) {
+    return { x: this.x + Math.cos(this.aim) * dist, y: this.y + 2 + Math.sin(this.aim) * dist };
   }
 
   hurt() {
