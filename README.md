@@ -29,6 +29,15 @@ Then open the printed URL (e.g. http://localhost:8000).
 | Pause | Esc / P |
 | Mute | M |
 
+## Features
+
+- 5 levels plus a boss fight, with 4 enemy types coming from every side
+- Dodge-dash with invulnerability frames
+- Power-up drops: rapid fire, triple shot and hearts
+- Combo multiplier (up to x5) for fast kill streaks
+- Chiptune music and sound effects, all generated in the browser
+- High score saved locally
+
 ## Structure
 
 - `src/main.js`: boot, fixed-timestep loop, scene switching, high score
