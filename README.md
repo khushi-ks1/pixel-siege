@@ -2,7 +2,11 @@
 
 A small retro top-down shooter that runs in the browser. It's built with plain HTML5 Canvas and JavaScript, with no build step and no dependencies.
 
-## Run
+**Play it:** https://khushi-ks1.github.io/pixel-siege/
+
+It's hosted on GitHub Pages and redeploys automatically on every push to `main`.
+
+## Run locally
 
 ES modules need a local server (they won't load from `file://`). From this folder, run either:
 
