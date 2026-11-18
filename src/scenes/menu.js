@@ -64,8 +64,8 @@ export class MenuScene {
     ctx.restore();
 
     if (blink(this.t, 1.5)) drawText(ctx, 'CLICK TO START', cx, 122, { align: 'center', color: '#73eff7' });
-    drawText(ctx, 'ARROWS MOVE - MOUSE AIM+SHOOT', cx, 142, { align: 'center' });
-    drawText(ctx, 'ESC PAUSE - M MUTE', cx, 154, { align: 'center', color: '#94b0c2' });
+    drawText(ctx, 'ARROWS MOVE  -  MOUSE AIM  -  CLICK SHOOT', cx, 140, { align: 'center' });
+    drawText(ctx, 'SPACE DASH  -  ESC PAUSE  -  M MUTE', cx, 153, { align: 'center', color: '#94b0c2' });
     drawText(ctx, `HI-SCORE ${String(this.app.highScore).padStart(6, '0')}`, cx, 168, { align: 'center', color: '#ffcd75' });
   }
 }

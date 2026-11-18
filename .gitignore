@@ -9,3 +9,6 @@ desktop.ini
 node_modules/
 .vercel/
 *.log
+
+# dev-only playtest harness
+_dev/

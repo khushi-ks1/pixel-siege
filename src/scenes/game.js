@@ -48,6 +48,11 @@ export class GameScene {
     sfx.shoot();
   }
 
+  onDash(p) {
+    this.particles.burst(p.x, p.y + 6, { count: 8, colors: ['#94b0c2', '#566c86', '#f4f4f4'], speed: 35, life: 0.3 });
+    sfx.dash();
+  }
+
   enemyShoot(x, y, angle, speed, silent = false) {
     this.enemyBullets.push(new Bullet(x, y, angle, speed, { enemy: true, r: 2, life: 6 }));
     if (!silent) sfx.enemyShoot();

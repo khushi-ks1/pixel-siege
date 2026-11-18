@@ -25,6 +25,7 @@ Then open the printed URL (e.g. http://localhost:8000).
 | Move | Arrow keys (WASD also works) |
 | Aim | Mouse |
 | Shoot | Left click (hold to auto-fire) |
+| Dodge-dash | Space or Shift (invulnerable while dashing) |
 | Pause | Esc / P |
 | Mute | M |
 
